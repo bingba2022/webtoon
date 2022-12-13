@@ -29,7 +29,11 @@ class HomeScreen extends StatelessWidget {
         builder: (context, snapshot) {
           // snapshot: state of your future
           if (snapshot.hasData) {
-            return const Text("There is data");
+            return ListView(
+              children: [
+                for (var webtoon in snapshot.data!) Text(webtoon.title),
+              ],
+            );
           }
           return const Center(
             child: CircularProgressIndicator(),
