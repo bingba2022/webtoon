@@ -44,18 +44,18 @@ class Webtoon extends StatelessWidget {
                 ],
                 borderRadius: BorderRadius.circular(10),
               ),
-              width: 250,
+              width: 180,
               clipBehavior: Clip.hardEdge,
               child: Image.network(thumb),
             ),
           ),
           const SizedBox(
-            height: 15,
+            height: 10,
           ),
           Text(
             title,
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 15,
             ),
           ),
         ],
