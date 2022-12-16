@@ -53,12 +53,9 @@ class _DetailScreenState extends State<DetailScreen> {
       body: SingleChildScrollView(
         // add SingleChildScrollView widget to fix overflow issues
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.all(30),
           child: Column(
             children: [
-              const SizedBox(
-                height: 25,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -127,17 +124,42 @@ class _DetailScreenState extends State<DetailScreen> {
                       children: [
                         for (var episode in snapshot.data!)
                           Container(
-                            decoration:
-                                BoxDecoration(color: Colors.green.shade300),
+                            margin: const EdgeInsets.only(
+                              // gap between each episode boxes
+                              bottom: 8,
+                            ),
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 5,
+                                    offset: const Offset(5, 5),
+                                    color: Colors.black.withOpacity(0.1),
+                                  )
+                                ],
+                                color:
+                                    Colors.green.shade400, // episode box color
+                                borderRadius: BorderRadius.circular(18)),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 20,
                               ),
-                              child: Row(children: [
-                                Text(episode.title),
-                                const Icon(Icons.chevron_right_rounded)
-                              ]),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween, // episode title 이랑 arrow icon 사이 갭
+                                  children: [
+                                    Text(
+                                      episode.title,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.chevron_right_rounded,
+                                      color: Colors.white,
+                                    )
+                                  ]),
                             ),
                           )
                       ],
