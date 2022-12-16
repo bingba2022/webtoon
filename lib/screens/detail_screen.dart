@@ -3,6 +3,10 @@ import 'package:webtoon/models/webtoon_detail_model.dart';
 import 'package:webtoon/models/webtoon_episode_model.dart';
 import 'package:webtoon/services/api_service.dart';
 
+// Had to turn into stateful widget because
+// we need access to init state method to initialize getToonById
+// and getLatestEpisodeById
+
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
 
@@ -46,58 +50,102 @@ class _DetailScreenState extends State<DetailScreen> {
         backgroundColor: Colors.white,
         elevation: 1.3,
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 25,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Hero(
-                tag: widget.id,
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 15, // how far away the shadows will be
-                        offset: const Offset(10,
-                            10), // where is the shadow located (0,0) -> center
-                        color: Colors.black.withOpacity(0.5),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 25,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Hero(
+                  tag: widget.id,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 15, // how far away the shadows will be
+                          offset: const Offset(10,
+                              10), // where is the shadow located (0,0) -> center
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    width: 190, // image size
+                    clipBehavior: Clip.hardEdge,
+                    child: Image.network(widget.thumb),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 19, // gap between image and text
+            ),
+            FutureBuilder(
+              future: webtoon,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        snapshot.data!.about,
+                        style: const TextStyle(
+                          fontSize: 12, // font size
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        '${snapshot.data!.genre} / ${snapshot.data!.age}',
+                        style: const TextStyle(
+                          fontSize: 13, // font size
+                        ),
                       ),
                     ],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  width: 220, // image size
-                  clipBehavior: Clip.hardEdge,
-                  child: Image.network(widget.thumb),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 19, // gap between image and text
-          ),
-          FutureBuilder(
-            future: webtoon,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40, // text padding
-                  ),
-                  child: Text(
-                    snapshot.data!.about,
-                    style: const TextStyle(
-                      fontSize: 13, // font size
-                    ),
-                  ),
-                );
-              }
-              return const Text(".....");
-            },
-          )
-        ],
+                  );
+                }
+                return const Text(".....");
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            FutureBuilder(
+              future:
+                  episodes, // future that we are going to wait for is episode
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // if there exists a list of episodes
+                  return Column(
+                    children: [
+                      for (var episode in snapshot.data!)
+                        Container(
+                          decoration:
+                              BoxDecoration(color: Colors.green.shade300),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            child: Row(children: [
+                              Text(episode.title),
+                              const Icon(Icons.chevron_right_rounded)
+                            ]),
+                          ),
+                        )
+                    ],
+                  );
+                }
+                return Container();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
